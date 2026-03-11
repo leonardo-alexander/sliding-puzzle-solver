@@ -21,8 +21,8 @@ def position_to_index(row, col):
     return 3 * row + col
 
 
-def get_neighbours(state):
-    neighbours = set()
+def get_neighbors(state):
+    neighbors = set()
 
     # Move UP, RIGHT, DOWN, LEFT
     dy = [-1, 0, 1, 0]
@@ -48,9 +48,9 @@ def get_neighbours(state):
         )
 
         new_neigbour = tuple(new_state)
-        neighbours.add(new_neigbour)
+        neighbors.add(new_neigbour)
 
-    return neighbours
+    return neighbors
 
 
 def is_goal(state):
@@ -74,16 +74,16 @@ def manhattan_distance(state):
 
 def change_state(state):
     min_distance = 1000
-    best_neighbour = state
+    best_neighbor = state
 
-    for neighbor in get_neighbours(state):
+    for neighbor in get_neighbors(state):
         neighbor_distance = manhattan_distance(neighbor)
 
         if neighbor_distance < min_distance:
             min_distance = neighbor_distance
-            best_neighbour = neighbor
+            best_neighbor = neighbor
 
-    return best_neighbour
+    return best_neighbor
 
 
 def solve(state):
@@ -92,6 +92,7 @@ def solve(state):
 
     g_score = {state: 0}
     open_set = []
+    came_from = {}
 
     heapq.heappush(open_set, (manhattan_distance(state), 0, state))
 
@@ -101,31 +102,49 @@ def solve(state):
         if current_g > g_score.get(current_state, float("inf")):
             continue
 
-        # print("g:", current_g)
-        # print("f:", current_f)
-        # print_board(current_state)
-
         if is_goal(current_state):
-            return
+            return came_from
 
-        for neighbour in get_neighbours(current_state):
+        for neighbor in get_neighbors(current_state):
             tentative_g = current_g + 1
 
-            if tentative_g < g_score.get(neighbour, float("inf")):
-                g_score[neighbour] = tentative_g
-                f_score = tentative_g + manhattan_distance(neighbour)
+            if tentative_g < g_score.get(neighbor, float("inf")):
+                came_from[neighbor] = current_state
+                g_score[neighbor] = tentative_g
+                f_score = tentative_g + manhattan_distance(neighbor)
 
                 heapq.heappush(
                     open_set,
                     (
                         f_score,
                         tentative_g,
-                        neighbour,
+                        neighbor,
                     ),
                 )
 
+    return None
+
+
+def reconstruct_path(came_from, current):
+    path = [current]
+
+    while current in came_from:
+        current = came_from[current]
+        path.append(current)
+
+    path.reverse()
+    return path
+
 
 goal = (1, 2, 3, 4, 5, 6, 7, 8, 0)
-state = (1, 2, 4, 3, 5, 6, 7, 8, 0)
+state = (1, 2, 4, 3, 5, 6, 7, 0, 8)
 
-solve(state)
+came_from = solve(state)
+
+if came_from is None:
+    print("No solution")
+else:
+    path = reconstruct_path(came_from, goal)
+    for step in path:
+        print_board(step)
+        print()
