@@ -1,6 +1,6 @@
 import heapq
 from heuristics import heuristic
-from puzzle import get_neighbors, is_goal
+from puzzle import get_neighbors, is_goal, goal
 from utils import print_board
 
 
@@ -49,3 +49,18 @@ def reconstruct_path(came_from, current):
 
     path.reverse()
     return path
+
+
+def display_path(state):
+    came_from = solve(state)
+
+    print("AUTO SOLVING!")
+
+    if came_from is None:
+        print("No solution")
+    else:
+        path = reconstruct_path(came_from, goal)
+        for i in range(len(path)):
+            print("Move", i, ":")
+            print_board(path[i])
+            print()
