@@ -1,16 +1,16 @@
-def get_blank_index(state):
+def get_blank_index(state: tuple[int, ...]) -> int:
     return state.index(0)
 
 
-def index_to_position(index):
+def index_to_position(index: int) -> tuple[int, ...]:
     return index // 3, index % 3
 
 
-def position_to_index(row, col):
+def position_to_index(row: int, col: int) -> int:
     return 3 * row + col
 
 
-def get_neighbors(state):
+def get_neighbors(state: tuple[int, ...]) -> set:
     neighbors = set()
 
     # Move UP, RIGHT, DOWN, LEFT
@@ -42,7 +42,20 @@ def get_neighbors(state):
     return neighbors
 
 
-def is_goal(state):
+def is_goal(state: tuple[int, ...]) -> bool:
     return state == goal
+
+
+def is_solvable(state: tuple[int, ...]) -> bool:
+    inv = 0
+    arr = [x for x in state if x != 0]
+
+    for i in range(len(arr)):
+        for j in range(i + 1, len(arr)):
+            if arr[i] > arr[j]:
+                inv += 1
+
+    return inv % 2 == 0
+
 
 goal = (1, 2, 3, 4, 5, 6, 7, 8, 0)

@@ -1,7 +1,7 @@
 from puzzle import index_to_position
 
 
-def manhattan_distance(state):
+def manhattan_distance(state: tuple[int, ...]) -> int:
     total = 0
 
     for index, tile in enumerate(state):
@@ -16,7 +16,7 @@ def manhattan_distance(state):
     return total
 
 
-def linear_conflict(state):
+def linear_conflict(state: tuple[int, ...]) -> int:
     conflicts = 0
 
     # check rows
@@ -52,5 +52,5 @@ def linear_conflict(state):
     return conflicts
 
 
-def heuristic(state):
+def heuristic(state: tuple[int, ...]) -> int:
     return manhattan_distance(state) + 2 * linear_conflict(state)

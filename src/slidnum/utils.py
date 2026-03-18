@@ -2,7 +2,7 @@ import random
 from puzzle import get_neighbors, goal
 
 
-def print_board(state):
+def print_board(state: tuple[int, ...]):
     for i in range(3):
         for j in range(3):
             tile = state[3 * i + j]
@@ -10,7 +10,7 @@ def print_board(state):
         print()
 
 
-def generate_random_state(steps=50):
+def generate_random_state(steps: int = 50) -> tuple[int, ...]:
     state = goal
 
     for _ in range(steps):

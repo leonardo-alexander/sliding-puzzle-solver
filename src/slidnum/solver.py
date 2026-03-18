@@ -4,10 +4,11 @@ from puzzle import get_neighbors, is_goal, goal
 from utils import print_board
 
 
-def solve(state):
+def solve(state: tuple[int, ...]):
     g_score = {state: 0}
     open_set = []
     came_from = {}
+    nodes_expanded = 0
 
     heapq.heappush(open_set, (heuristic(state), 0, state))
 
@@ -17,8 +18,10 @@ def solve(state):
         if current_g > g_score.get(current_state, float("inf")):
             continue
 
+        nodes_expanded += 1
+
         if is_goal(current_state):
-            return came_from
+            return came_from, nodes_expanded
 
         for neighbor in get_neighbors(current_state):
             tentative_g = current_g + 1
@@ -40,7 +43,9 @@ def solve(state):
     return None
 
 
-def reconstruct_path(came_from, current):
+def reconstruct_path(
+    came_from: dict, current: tuple[int, ...]
+) -> list[tuple[int, ...]]:
     path = [current]
 
     while current in came_from:
@@ -51,7 +56,7 @@ def reconstruct_path(came_from, current):
     return path
 
 
-def display_path(state):
+def display_path(state: tuple[int, ...]):
     came_from = solve(state)
 
     print("AUTO SOLVING!")
